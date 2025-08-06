@@ -1,0 +1,44 @@
+repos:
+  # Dockerfile
+  - repo: https://github.com/hadolint/hadolint
+    rev: v2.12.0
+    hooks:
+      - id: hadolint
+  # shell
+  - repo: local
+    hooks:
+      # shellcheck
+      - id: shellcheck
+        name: shellcheck
+        entry: shellcheck
+        language: system
+        types: [shell]
+      # shfmt
+      - id: shfmt
+        name: shfmt
+        entry: shfmt
+        args: ["-w", "-s"]
+        language: system
+        types: [shell]
+        require_serial: true
+  # python
+  - repo: local
+    hooks:
+      # ruff lint
+      - id: ruff-lint
+        name: ruff-lint
+        entry: ruff check
+        language: python
+        types_or: [python, pyi]
+      - id: ty
+        name: ty
+        entry: ty check
+        language: python
+        types_or: [python, pyi]
+        require_serial: true
+      - id: ruff-formatter
+        name: ruff-formatter
+        entry: ruff format
+        language: python
+        types_or: [python, pyi]
+        require_serial: true

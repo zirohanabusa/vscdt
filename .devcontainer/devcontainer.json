@@ -1,0 +1,149 @@
+{
+  "name": "VSCDT",
+  "build": {
+    "context": "..",
+    "dockerfile": "Dockerfile"
+  },
+  "runArgs": ["--rm"],
+  "features": {
+    "ghcr.io/dhoeric/features/hadolint:1": {}
+  },
+  "postCreateCommand": "cd ${containerWorkspaceFolder} && ([ -f \".git/hooks/pre-commit\" ] || pre-commit install)",
+  "postStartCommand": "cd ${containerWorkspaceFolder} && pre-commit run --all-files",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // Hadolint is linter for Dockerfile.
+        "exiasr.hadolint",
+
+        // Git Lens is an extension that facilitates various git operations on vscode.
+        "eamodio.gitlens",
+
+        // Git Graph is an extension for viewing and manipulating git repositories on vscode.
+        "mhutchie.git-graph",
+
+        // Conventional Commits is an extension for conventional commits.
+        "vivaxy.vscode-conventional-commits",
+
+        // Todo Tree is an extension for quickly searches your workspace for comment tags like TODO and FIXME, and displays them in a tree view in the activity bar.
+        "Gruntfuggly.todo-tree",
+
+        // Error Lens is an extension that displays errors, warnings, and other diagnostic results inline.
+        "usernamehw.errorlens",
+
+        // GistPad is an extension for manage your code snippets and developer notes using GitHub Gists and repositories.
+        "vsls-contrib.gistfs",
+
+        // Markdown All in One is an extension to support markdown input.
+        "yzhang.markdown-all-in-one",
+
+        // Markdown Preview Enhanced is an extension for preview enhanced.
+        "shd101wyy.markdown-preview-enhanced",
+
+        // Markdown PDF is an extension that outputs markdown to PDF, HTML, PNG or JPEG.
+        "yzane.markdown-pdf",
+
+        // Text Tables is an extension that brings the power of Emacs table editing.
+        "RomanPeshkov.vscode-text-tables",
+
+        // Draw.io Integration is an extension that integrates draw.io and vscode.
+        "hediet.vscode-drawio",
+
+        // Excalidraw is an extension integrates Excalidraw into vscode.
+        "pomdtr.excalidraw-editor",
+
+        // Biome is formatter for javascript, typescript, jsx, tsx, json, jsonc, css, graphql.
+        "biomejs.biome",
+
+        // Dprint is formatting for markdown, toml, dockerfile, yaml.
+        "dprint.dprint",
+
+        // HTMLHint is an extention integration for HTMLHint.
+        "htmlhint.vscode-htmlhint",
+
+        // Bash IDE is an extention utilizing the Bash Language Server and integrating with explainshell, shellcheck and shfmt.
+        "mads-hartmann.bash-ide-vscode",
+        // Ruff is an extension with support for python linter and formatter.
+        "charliermarsh.ruff",
+
+        // ty is an extension with support for python type checker.
+        "astral-sh.ty",
+
+        // Mypy Type Checker is an extension with support for python type checker.
+        "ms-python.mypy-type-checker",
+
+        // autoDocstring is an extension with support for python docstrings automatically.
+        "njpwerner.autodocstring"
+
+        //
+        //"",
+      ],
+      "settings": {
+        "[json]": {
+          "editor.defaultFormatter": "biomejs.biome",
+          "editor.formatOnSave": true
+        },
+        "[css]": {
+          "editor.defaultFormatter": "biomejs.biome",
+          "editor.formatOnSave": true
+        },
+        "[javascript]": {
+          "editor.defaultFormatter": "biomejs.biome",
+          "editor.formatOnSave": true
+        },
+        "[typescript]": {
+          "editor.defaultFormatter": "biomejs.biome",
+          "editor.formatOnSave": true
+        },
+        "[dockerfile]": {
+          "editor.defaultFormatter": "dprint.dprint",
+          "editor.formatOnSave": true
+        },
+        "[markdown]": {
+          "editor.defaultFormatter": "dprint.dprint",
+          "editor.formatOnSave": true
+        },
+        "[toml]": {
+          "editor.defaultFormatter": "dprint.dprint",
+          "editor.formatOnSave": true
+        },
+        "[yaml]": {
+          "editor.defaultFormatter": "dprint.dprint",
+          "editor.formatOnSave": true
+        },
+        "[html]": {
+          "editor.defaultFormatter": "dprint.dprint",
+          "editor.formatOnSave": true
+        },
+        "[shellscript]": {
+          "editor.defaultFormatter": "mads-hartmann.bash-ide-vscode",
+          "editor.formatOnSave": true
+        },
+        "[python]": {
+          "editor.defaultFormatter": "charliermarsh.ruff",
+          "editor.formatOnSave": true,
+          "editor.codeActionsOnSave": {
+            "source.fixAll": "explicit"
+          }
+        },
+        "htmlhint.documentSelector": ["html", "htm"],
+        "htmlhint.options": {
+          "attr-lowercase": true,
+          "attr-value-double-quotes": true,
+          "doctype-first": true,
+          "html-lang-require": true,
+          "meta-charset-require": true,
+          "meta-viewport-require": true,
+          "tagname-lowercase": false,
+          "title-require": true
+        },
+        "python.testing.pytestArgs": [
+          "tests"
+        ],
+        "python.testing.unittestEnabled": false,
+        "python.testing.pytestEnabled": true
+      }
+    }
+  },
+  "remoteUser": "vscode"
+}
