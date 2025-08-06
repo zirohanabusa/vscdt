@@ -24,21 +24,37 @@ repos:
   # python
   - repo: local
     hooks:
+      # pytest
+      - id: pytest
+        name: pytest
+        entry: uv run --no-active pytest tests
+        language: python
+        types_or: [python, pyi]
       # ruff lint
       - id: ruff-lint
         name: ruff-lint
-        entry: ruff check
-        language: python
-        types_or: [python, pyi]
-      - id: ty
-        name: ty
-        entry: ty check
+        entry: uv run ruff check
         language: python
         types_or: [python, pyi]
         require_serial: true
-      - id: ruff-formatter
-        name: ruff-formatter
-        entry: ruff format
+      # ty check
+      - id: ty
+        name: ty
+        entry: uv run ty check
+        language: python
+        types_or: [python, pyi]
+        require_serial: true
+      # mypy
+      - id: mypy
+        name: mypy
+        entry: uv run mypy
+        language: python
+        types_or: [python, pyi]
+        require_serial: true
+      # ruff format
+      - id: ruff-format
+        name: ruff-format
+        entry: uv run ruff format
         language: python
         types_or: [python, pyi]
         require_serial: true

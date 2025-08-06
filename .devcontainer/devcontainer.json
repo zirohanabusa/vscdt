@@ -9,7 +9,7 @@
     "ghcr.io/dhoeric/features/hadolint:1": {}
   },
   "postCreateCommand": "cd ${containerWorkspaceFolder} && ([ -f \".git/hooks/pre-commit\" ] || pre-commit install)",
-  "postStartCommand": "cd ${containerWorkspaceFolder} && pre-commit run --all-files",
+  "postStartCommand": "cd ${containerWorkspaceFolder} && uv sync && pre-commit run --all-files",
   "customizations": {
     "vscode": {
       "extensions": [
