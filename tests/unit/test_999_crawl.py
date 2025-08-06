@@ -1,10 +1,10 @@
 def test_hello() -> None:
     imported = False
     try:
-        import example
+        import crawl
 
         imported = True
     except BaseException:
         pass
     assert imported is True
-    assert example.text() == "hello python world!"
+    assert crawl.text() == "hello python world!"

@@ -1,5 +1,5 @@
 [project]
-name = "example"
+name = "crawl"
 version = "0.0.1"
 authors = [
     { name = "zirohanabusa", email = "103222144+zirohanabusa@users.noreply.github.com" }
@@ -7,10 +7,22 @@ authors = [
 readme = "README.md"
 # https://devguide.python.org/versions/
 requires-python = ">=3.13, <4"
-dependencies = []
+dependencies = [
+  "pyprojroot",
+  "python-dotenv",
+  "pydantic",
+  "aiofiles",
+  "httpx[http2,brotli,zstd]",
+  "lxml",
+  "cssselect",
+  "beautifulsoup4",
+  "jsonpath-ng",
+  "jmespath",
+  "playwright",
+]
 
 [project.scripts]
-hello = "example:hello"
+hello = "crawl:hello"
 
 [build-system]
 requires = ["uv_build>=0.8.3,<0.9.0"]
@@ -20,8 +32,11 @@ build-backend = "uv_build"
 dev-dependencies = [
   "mypy",
   "pytest",
+  "pytest-aiohttp",
   "pytest-asyncio",
   "pytest-cov",
+  "pytest-playwright",
+  "types-aiofiles",
 ]
 
 [tool.ruff]

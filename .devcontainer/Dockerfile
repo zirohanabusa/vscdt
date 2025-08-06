@@ -54,5 +54,6 @@ USER $USERNAME
 # hadolint ignore=SC2016
 RUN : \
     && /home/$USERNAME/.local/bin/uv tool install pre-commit@latest \
+    && /home/$USERNAME/.local/bin/uvx playwright install-deps \
     && echo '[ -d "$HOME/.dprint/bin" ] && PATH="$HOME/.dprint/bin:$PATH"' >> /home/$USERNAME/.profile \
     && echo '[ -d "$HOME/.volta/bin" ] && PATH="$HOME/.volta/bin:$PATH"' >> /home/$USERNAME/.profile
