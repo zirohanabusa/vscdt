@@ -1,58 +1,59 @@
-FROM debian:bookworm-slim AS builder
+ARG CODENAME=trixie
+FROM debian:${CODENAME}-slim AS builder
 ARG USERNAME=vscode
 ARG GROUPNAME=vscode
 ARG UID=1000
 ARG GID=1000
+ARG USERHOME=/home/${USERNAME}
+ENV PYTHONUNBUFFERED=True
+ENV UV_LINK_MODE=copy
+ENV DPRINT_INSTALL=/home/${USERNAME}/.local
+WORKDIR /workdir
+ADD https://dprint.dev/install.sh dprint-installer.sh
+ADD https://mise.run mise-installer.sh
+ADD https://astral.sh/uv/install.sh uv-installer.sh
+SHELL [ "/bin/bash", "-o", "pipefail", "-c" ]
 RUN : \
     && apt-get update \
     && apt-get install -y --no-install-recommends ca-certificates=* curl=* unzip=* xz-utils=* \
     && groupadd -g $GID $GROUPNAME \
-    && useradd -l -m -s /bin/bash -u $UID -g $GID $USERNAME
-WORKDIR /opt
-SHELL [ "/bin/bash", "-o", "pipefail", "-c" ]
-ADD https://dprint.dev/install.sh dprint-installer.sh
-ADD https://get.volta.sh volta-installer.sh
-ADD https://astral.sh/uv/install.sh uv-installer.sh
-RUN : \
-    && touch volta-completions node-completions npm-completions uv-completions \
+    && useradd -l -m -s /bin/bash -u $UID -g $GID $USERNAME \
+    && touch mise-completions node-completions npm-completions uv-completions \
     && chown $USERNAME:$GROUPNAME ./*-completions \
     && chmod +r ./*-installer.sh
 USER $USERNAME
 RUN : \
     && bash dprint-installer.sh \
-    && bash volta-installer.sh \
+    && bash mise-installer.sh --yes \
     && bash uv-installer.sh \
-    && /home/$USERNAME/.volta/bin/volta install node \
-    && /home/$USERNAME/.volta/bin/npm install -g @biomejs/biome vite@latest markuplint@latest \
-    && /home/$USERNAME/.local/bin/uv tool install ruff@latest \
-    && /home/$USERNAME/.local/bin/uv tool install ty@latest \
-    && /home/$USERNAME/.local/bin/uv tool install shellcheck-py@latest \
-    && /home/$USERNAME/.local/bin/uv tool install shfmt-py@latest \
-    && /home/$USERNAME/.volta/bin/volta completions bash > volta-completions \
-    && /home/$USERNAME/.volta/bin/node --completion-bash > node-completions \
-    && /home/$USERNAME/.volta/bin/npm completion > npm-completions \
-    && /home/$USERNAME/.local/bin/uv generate-shell-completion bash > uv-completions \
-    && echo "alias ll='ls -lha --color=auto'" >> ~/.bash_aliases \
-    && echo "alias ..='cd ..'" >> ~/.bash_aliases
+    && export PATH="${USERHOME}/.local/share/mise/shims:${USERHOME}/.local/bin:${PATH}" \
+    && mise settings set node.compile false \
+    && mise install node@lts \
+    && mise use --global node@lts \
+    && npm install -g @biomejs/biome@latest vite@latest markuplint@latest \
+    && uv tool install ruff@latest \
+    && uv tool install ty@latest \
+    && uv tool install shellcheck-py@latest \
+    && uv tool install shfmt-py@latest \
+    && uv tool install pre-commit@latest \
+    && mise completion bash --include-bash-completion-lib > mise-completions \
+    && uv generate-shell-completion bash > uv-completions \
+    && node --completion-bash > node-completions \
+    && npm completion > npm-completions \
+    && echo 'alias ll="ls -lha --color=auto"' >> ${USERHOME}/.bash_aliases \
+    && echo 'alias ..="cd .."' >> ${USERHOME}/.bash_aliases
 
-FROM mcr.microsoft.com/vscode/devcontainers/base:bookworm
+ARG CODENAME=trixie
+FROM mcr.microsoft.com/vscode/devcontainers/base:${CODENAME}
 ARG USERNAME=vscode
 ARG GROUPNAME=vscode
+ARG USERHOME=/home/${USERNAME}
 ENV PYTHONUNBUFFERED=True
 ENV UV_LINK_MODE=copy
-COPY --from=builder /opt/*-completions /etc/bash_completion.d/
-COPY --from=builder /home/$USERNAME/.bash_aliases /home/$USERNAME/
-COPY --from=builder /home/$USERNAME/.dprint /home/$USERNAME/.dprint
-COPY --from=builder /home/$USERNAME/.volta /home/$USERNAME/.volta
-COPY --from=builder /home/$USERNAME/.local/bin/uv* /home/$USERNAME/.local/bin/
-COPY --from=builder /home/$USERNAME/.local/bin/ruff /home/$USERNAME/.local/bin/
-COPY --from=builder /home/$USERNAME/.local/bin/ty /home/$USERNAME/.local/bin/
-COPY --from=builder /home/$USERNAME/.local/bin/shellcheck /home/$USERNAME/.local/bin/
-COPY --from=builder /home/$USERNAME/.local/bin/shfmt /home/$USERNAME/.local/bin/
-RUN chown -R $USERNAME:$GROUPNAME /home/$USERNAME
+COPY --from=builder /workdir/*-completions /etc/bash_completion.d/
+COPY --from=builder --chown=${USERNAME}:${GROUPNAME} ${USERHOME}/.bash_aliases ${USERHOME}/
+COPY --from=builder --chown=${USERNAME}:${GROUPNAME} ${USERHOME}/.local ${USERHOME}/.local
+COPY --from=builder --chown=${USERNAME}:${GROUPNAME} ${USERHOME}/.config ${USERHOME}/.config
 USER $USERNAME
 # hadolint ignore=SC2016
-RUN : \
-    && /home/$USERNAME/.local/bin/uv tool install pre-commit@latest \
-    && echo '[ -d "$HOME/.dprint/bin" ] && PATH="$HOME/.dprint/bin:$PATH"' >> /home/$USERNAME/.profile \
-    && echo '[ -d "$HOME/.volta/bin" ] && PATH="$HOME/.volta/bin:$PATH"' >> /home/$USERNAME/.profile
+RUN echo '[ -d "$HOME/.local/share/mise/shims" ] && export PATH="$HOME/.local/share/mise/shims:$PATH"' >> /${USERHOME}/.profile
