@@ -30,7 +30,7 @@ RUN : \
     && mise settings set node.compile false \
     && mise install node@lts \
     && mise use --global node@lts \
-    && npm install -g @biomejs/biome@latest vite@latest markuplint@latest @google/gemini-cli@latest \
+    && npm install -g @biomejs/biome@latest vite@latest markuplint@latest @google/clasp@latest @types/google-apps-script@latest @google/gemini-cli@latest \
     && uv tool install ruff@latest \
     && uv tool install ty@latest \
     && uv tool install shellcheck-py@latest \
