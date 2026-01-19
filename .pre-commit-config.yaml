@@ -1,18 +1,21 @@
 repos:
+  # General hooks
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
+    hooks:
+      - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md]
+      - id: end-of-file-fixer
+      - id: check-yaml
+      - id: check-added-large-files
   # Dockerfile
   - repo: https://github.com/hadolint/hadolint
-    rev: v2.12.0
+    rev: v2.14.0
     hooks:
       - id: hadolint
   # shell
   - repo: local
     hooks:
-      # shellcheck
-      - id: shellcheck
-        name: shellcheck
-        entry: shellcheck
-        language: system
-        types: [shell]
       # shfmt
       - id: shfmt
         name: shfmt
@@ -21,24 +24,31 @@ repos:
         language: system
         types: [shell]
         require_serial: true
+      # shellcheck
+      - id: shellcheck
+        name: shellcheck
+        entry: shellcheck
+        language: system
+        types: [shell]
   # python
   - repo: local
     hooks:
-      # ruff lint
-      - id: ruff-lint
-        name: ruff-lint
-        entry: ruff check
-        language: python
-        types_or: [python, pyi]
-      - id: ty
-        name: ty
-        entry: ty check
-        language: python
-        types_or: [python, pyi]
-        require_serial: true
       - id: ruff-formatter
         name: ruff-formatter
         entry: ruff format
         language: python
         types_or: [python, pyi]
         require_serial: true
+      # ruff lint
+      - id: ruff-lint
+        name: ruff-lint
+        entry: ruff check
+        args: ["--fix"]
+        language: python
+        types_or: [python, pyi]
+        require_serial: true
+      - id: ty
+        name: ty
+        entry: ty check
+        language: python
+        types_or: [python, pyi]
