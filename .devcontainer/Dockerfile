@@ -24,13 +24,13 @@ RUN : \
 USER $USERNAME
 RUN : \
     && bash dprint-installer.sh \
-    && bash mise-installer.sh --yes \
+    && bash mise-installer.sh \
     && bash uv-installer.sh \
     && export PATH="${USERHOME}/.local/share/mise/shims:${USERHOME}/.local/bin:${PATH}" \
     && mise settings set node.compile false \
     && mise install node@lts \
     && mise use --global node@lts \
-    && npm install -g @biomejs/biome@latest vite@latest markuplint@latest \
+    && npm install -g @biomejs/biome@latest vite@latest markuplint@latest @google/gemini-cli@latest \
     && uv tool install ruff@latest \
     && uv tool install ty@latest \
     && uv tool install shellcheck-py@latest \
